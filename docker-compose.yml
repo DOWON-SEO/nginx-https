@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+    nginx:
+        image: nginx:latest
+        entrypoint: /etc/nginx/conf/nginx.conf.generate.sh
+        command: nginx -g "daemon off;"
+        ports:
+            - "80:80"
+            - "443:443"
+        env_file:
+            - .env
+        volumes:
+            - ./nginx.conf.generate.sh:/etc/nginx/conf/nginx.conf.generate.sh
+            - ./nginx.conf.template:/etc/nginx/conf/nginx.conf.template
+            - ./data/certs/conf:/etc/letsencrypt
+            - ./data/webroot:/var/www/certbot
+        depends_on:
+            - ${SERVER_TEST_NAME}
+        networks:
+            - deployment
+
+    certbot:
+        image: certbot/certbot
+        volumes:
+            - ./data/certs/conf:/etc/letsencrypt
+            - ./data/webroot:/var/www/certbot
+        entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+networks:
+    deployment:
+        external: true
