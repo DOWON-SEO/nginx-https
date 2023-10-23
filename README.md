@@ -1,5 +1,7 @@
 # NGINX HTTPS Deployment
 
+[한국어 README 읽기](./README-ko.md)
+
 This Repository provides a set of files for hassle-free HTTPS deployment using NGINX and Let's Encrypt, ensuring your web services are secure.
 
 ## Getting Started
